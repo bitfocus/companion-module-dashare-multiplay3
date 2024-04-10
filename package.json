@@ -12,7 +12,8 @@
 		"url": ""
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.7.0"
+		"@companion-module/base": "~1.7.0",
+		"node-osc": "9.1.1"
 	},
 	"devDependencies": {
 		"@companion-module/tools": "^1.4.2"
