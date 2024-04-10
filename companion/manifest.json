@@ -1,0 +1,26 @@
+{
+	"id": "companion-module-dashare-multiplay",
+	"name": "companion-module-dashare-multiplay",
+	"shortname": "multiplay",
+	"description": "OSC for DaShare Multiplay software",
+	"version": "0.0.0",
+	"license": "MIT",
+	"repository": "",
+	"bugs": "",
+	"maintainers": [
+		{
+			"name": "Santi Lopez",
+			"email": "nomix99@msn.com"
+		}
+	],
+	"runtime": {
+		"type": "node18",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.0",
+		"entrypoint": "../main.js"
+	},
+	"legacyIds": [],
+	"manufacturer": "Your company",
+	"products": ["Your product"],
+	"keywords": ["multiplay", "osc"]
+}
