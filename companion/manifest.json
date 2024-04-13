@@ -20,7 +20,7 @@
 		"entrypoint": "../main.js"
 	},
 	"legacyIds": [],
-	"manufacturer": "Your company",
-	"products": ["Your product"],
+	"manufacturer": "da-Share",
+	"products": ["MultiPlay"],
 	"keywords": ["multiplay", "osc"]
 }
