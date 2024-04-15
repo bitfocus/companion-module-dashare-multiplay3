@@ -8,9 +8,40 @@ module.exports = function (self) {
 	self.setActionDefinitions({
 		go: {
 			name: 'Go',
-			options: [],
+			options: [
+				{
+					id: 'deactivate',
+					type: 'checkbox',
+					label: 'deactivate all other active cues',
+					default: true,
+				},
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Traget',
+					choices: [
+						{
+							id: 0,
+							label: 'GO selected',
+						},
+						{
+							id: 1,
+							label: 'Specific cue',
+						},
+					],
+				},
+			],
 			callback: async (event) => {
-				sendOscMessage('/cue/playhead/go', [])
+				if (event.options.deactivate) {
+					sendOscMessage('cue/active/stop', [])
+				}
+				let message = '/cue/'
+				if (event.options.target == 0) {
+					message += 'playhead/go'
+				} else {
+					message += event.options.cue + '/go'
+				}
+				sendOscMessage(message, [])
 			},
 		},
 		stopAll: {
