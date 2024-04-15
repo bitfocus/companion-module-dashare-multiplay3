@@ -6,20 +6,27 @@ module.exports = function (self) {
 	}
 
 	self.setActionDefinitions({
-		sample_action: {
-			name: 'My First Action',
-			options: [
-				{
-					id: 'num',
-					type: 'number',
-					label: 'Test',
-					default: 5,
-					min: 0,
-					max: 100,
-				},
-			],
+		go: {
+			name: 'Go',
+			options: [],
 			callback: async (event) => {
-				console.log('Hello world!', event.options.num)
+				sendOscMessage('/cue/playhead/go', [])
+			},
+		},
+		stopAll: {
+			name: 'Stop all active cues',
+			options: [],
+			callback: async (event) => {
+				sendOscMessage('/cue/active/stop', [])
+			},
+		},
+		fadeAll: {
+			name: 'Fade all active cues',
+			options: [],
+			callback: () => {
+				sendOscMessage('/cue/active/fade', [])
+				self.fadingOutStatus = true
+				self.checkFeedbacks('FadingOut')
 			},
 		},
 	})
