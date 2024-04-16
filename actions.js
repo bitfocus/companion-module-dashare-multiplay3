@@ -1,3 +1,4 @@
+const MOVE_POSITIONS = ['first', 'last', 'prev', 'next', 'cue']
 module.exports = function (self) {
 	const sendOscMessage = (path, args) => {
 		self.log('debug', `Sending OSC ${self.config.host}:${self.config.port} ${path}`)
@@ -18,7 +19,7 @@ module.exports = function (self) {
 				{
 					id: 'target',
 					type: 'dropdown',
-					label: 'Traget',
+					label: 'Target',
 					choices: [
 						{
 							id: 0,
@@ -29,17 +30,27 @@ module.exports = function (self) {
 							label: 'Specific cue',
 						},
 					],
+					default: 0,
+				},
+				{
+					id: 'q_id',
+					type: 'textinput',
+					label: 'Cue id (no spaces allowed)',
+					isVisible: (event) => event.options.target == 1,
 				},
 			],
-			callback: async (event) => {
+			callback: (event) => {
 				if (event.options.deactivate) {
-					sendOscMessage('cue/active/stop', [])
+					self.log('info', 'Stop all checked')
+					sendOscMessage('/cue/active/stop', [])
 				}
+
 				let message = '/cue/'
+
 				if (event.options.target == 0) {
 					message += 'playhead/go'
 				} else {
-					message += event.options.cue + '/go'
+					message += event.options.q_id + '/go'
 				}
 				sendOscMessage(message, [])
 			},
@@ -47,7 +58,7 @@ module.exports = function (self) {
 		stopAll: {
 			name: 'Stop all active cues',
 			options: [],
-			callback: async (event) => {
+			callback: (event) => {
 				sendOscMessage('/cue/active/stop', [])
 			},
 		},
@@ -58,6 +69,35 @@ module.exports = function (self) {
 				sendOscMessage('/cue/active/fade', [])
 				self.fadingOutStatus = true
 				self.checkFeedbacks('FadingOut')
+			},
+		},
+		moveGo: {
+			name: 'Move GO position',
+			options: [
+				{
+					id: 'target',
+					label: 'Target',
+					type: 'dropdown',
+					choices: [
+						{ id: 0, label: 'First' },
+						{ id: 1, label: 'Last' },
+						{ id: 2, label: 'Previous' },
+						{ id: 3, label: 'Next' },
+						{ id: 4, label: 'Cue' },
+					],
+					default: 0,
+				},
+				{
+					id: 'q_id',
+					type: 'textinput',
+					label: 'Cue id (no spaces allowed)',
+					isVisible: (event) => event.options.target == 4,
+					default: '',
+				},
+			],
+			callback: (event) => {
+				let message = '/select/' + MOVE_POSITIONS[event.options.target]
+				sendOscMessage(message, [event.options.q_id])
 			},
 		},
 	})
