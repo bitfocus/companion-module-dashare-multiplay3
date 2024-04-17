@@ -96,8 +96,13 @@ module.exports = function (self) {
 				},
 			],
 			callback: (event) => {
-				let message = '/select/' + MOVE_POSITIONS[event.options.target]
-				sendOscMessage(message, [event.options.q_id])
+				let message = '/select/'
+				if (event.options.target == 4 && event.options.q_id != '') {
+					message += event.options.q_id
+				} else {
+					message += MOVE_POSITIONS[event.options.target]
+				}
+				sendOscMessage(message, [])
 			},
 		},
 	})

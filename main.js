@@ -37,38 +37,38 @@ class MultiplayInstance extends InstanceBase {
 		})
 
 		self.listener.on('message', function (message) {
-			// self.log('info', 'Message: ' + message)
-			switch (message[0]) {
-				case '/status/elapsed':
-					self.setVariableValues({ t_elapsed: message[1] })
-					break
-				case '/status/remaining':
-					self.setVariableValues({ t_remain: message[1] })
-					break
-				case '/status/current/qdesc':
-					self.setVariableValues({ q_description: message[1] })
-					break
-				case '/status/stopall':
-					self.stopAllStatus = message[1] === true
-					self.setVariableValues({ st_stopAll: self.stopAllStatus })
-					break
-				case '/status/fadeall':
-					self.fadeAllStatus = message[1] === true
-					self.fadingOutStatus = false
-					self.setVariableValues({ st_fadeAll: self.fadeAllStatus })
-					break
-				case '/status/go':
-					self.goStatus = message[1] === true
-					self.setVariableValues({ st_go: self.goStatus })
-					break
-				case '/status/select/prev':
-					self.prevStatus = message[1] === true
-					self.setVariableValues({ st_prev: self.prevStatus })
-				case '/status/select/next':
-					self.nextStatus = message[1] === true
-					self.setVariableValues({ st_next: self.nextStatus })
-			}
-			self.checkFeedbacks('CheckState', 'FadingOut')
+			self.log('info', 'Message: ' + message)
+			// switch (message[0]) {
+			// 	case '/status/elapsed':
+			// 		self.setVariableValues({ t_elapsed: message[1] })
+			// 		break
+			// 	case '/status/remaining':
+			// 		self.setVariableValues({ t_remain: message[1] })
+			// 		break
+			// 	case '/status/current/qdesc':
+			// 		self.setVariableValues({ q_description: message[1] })
+			// 		break
+			// 	case '/status/stopall':
+			// 		self.stopAllStatus = message[1] === true
+			// 		self.setVariableValues({ st_stopAll: self.stopAllStatus })
+			// 		break
+			// 	case '/status/fadeall':
+			// 		self.fadeAllStatus = message[1] === true
+			// 		self.fadingOutStatus = false
+			// 		self.setVariableValues({ st_fadeAll: self.fadeAllStatus })
+			// 		break
+			// 	case '/status/go':
+			// 		self.goStatus = message[1] === true
+			// 		self.setVariableValues({ st_go: self.goStatus })
+			// 		break
+			// 	case '/status/select/prev':
+			// 		self.prevStatus = message[1] === true
+			// 		self.setVariableValues({ st_prev: self.prevStatus })
+			// 	case '/status/select/next':
+			// 		self.nextStatus = message[1] === true
+			// 		self.setVariableValues({ st_next: self.nextStatus })
+			// }
+			// self.checkFeedbacks('CheckState', 'FadingOut')
 		})
 	}
 
