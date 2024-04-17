@@ -8,7 +8,7 @@ module.exports = function (self) {
 
 	self.setActionDefinitions({
 		go: {
-			name: 'Go',
+			name: 'GO',
 			options: [
 				{
 					id: 'deactivate',
@@ -35,7 +35,7 @@ module.exports = function (self) {
 				{
 					id: 'q_id',
 					type: 'textinput',
-					label: 'Cue id (no spaces allowed)',
+					label: 'Q# (no spaces allowed)',
 					isVisible: (event) => event.options.target == 1,
 				},
 			],

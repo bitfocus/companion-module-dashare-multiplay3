@@ -75,6 +75,8 @@ class MultiplayInstance extends InstanceBase {
 	initVariables() {
 		const self = this
 
+		//Action enabled states
+
 		self.goStatus = false
 		self.stopAllStatus = false
 		self.fadeAllStatus = false
