@@ -42,6 +42,8 @@ module.exports = async function (self) {
 						{ id: 0, label: 'Go' },
 						{ id: 1, label: 'Stop all' },
 						{ id: 2, label: 'Fade all' },
+						{ id: 3, label: 'Previous' },
+						{ id: 4, label: 'Next' },
 					],
 				},
 			],
@@ -53,6 +55,10 @@ module.exports = async function (self) {
 						return self.stopAllStatus
 					case 2:
 						return self.fadeAllStatus
+					case 3:
+						return self.prevStatus
+					case 4:
+						return self.nextStatus
 				}
 			},
 		},
