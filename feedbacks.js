@@ -53,5 +53,27 @@ module.exports = async function (self) {
 				return self.fadingOutStatus
 			},
 		},
+		WarningTime: {
+			name: 'End warning',
+			type: 'boolean',
+			label: 'Set time to ends',
+			defaultStyle: {
+				color: combineRgb(255, 0, 0),
+			},
+			options: [
+				{
+					id: 'seconds',
+					type: 'textinput',
+					label: 'Seconds to warm (max 59)',
+					default: 5,
+				},
+			],
+			callback: (feedback) => {
+				if (!self.timeRemaining.includes(':')) {
+					// self.log('info', 'Time to go')
+					return feedback.options.seconds >= parseInt(self.timeRemaining)
+				}
+			},
+		},
 	})
 }

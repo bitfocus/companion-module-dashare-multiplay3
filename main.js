@@ -37,13 +37,15 @@ class MultiplayInstance extends InstanceBase {
 		})
 
 		self.listener.on('message', function (message) {
-			self.log('info', 'Message: ' + message)
+			// self.log('info', 'Message: ' + message)
 			switch (message[0]) {
 				case '/status/elapsed':
-					self.setVariableValues({ t_elapsed: message[1] })
+					self.timeElapsed = message[1]
+					self.setVariableValues({ t_elapsed: self.timeElapsed })
 					break
 				case '/status/remaining':
-					self.setVariableValues({ t_remain: message[1] })
+					self.timeRemaining = message[1]
+					self.setVariableValues({ t_remain: self.timeRemaining })
 					break
 				case '/status/current/qdesc':
 					self.setVariableValues({ q_description: message[1] })
@@ -68,7 +70,7 @@ class MultiplayInstance extends InstanceBase {
 					self.nextStatus = message[1] === true
 					self.setVariableValues({ st_next: self.nextStatus })
 			}
-			self.checkFeedbacks('CheckState', 'FadingOut')
+			self.checkFeedbacks()
 		})
 	}
 
@@ -83,6 +85,8 @@ class MultiplayInstance extends InstanceBase {
 		self.fadingOutStatus = false
 		self.prevStatus = false
 		self.nextStatus = false
+		self.timeRemaining = ''
+		self.timeElapsed = ''
 	}
 
 	// When module gets deleted
