@@ -1,48 +1,6 @@
+const CHOICES = require('./choices')
+
 module.exports = function (self) {
-	const ACTION_PATH = [
-		'go',
-		'stop',
-		'pause',
-		'restart',
-		'resume',
-		'move',
-		'fade',
-		'cueposition',
-		'jump',
-		'pan',
-		'volume',
-		'speed',
-		'track',
-	]
-	const TARGET_PATH = ['playhead', 'active', 'cue']
-	const POSITION_PATH = ['first', 'last', 'prev', 'next', 'cue']
-	const ACTION_CHOICES = [
-		{ id: 0, label: 'GO' },
-		{ id: 1, label: 'STOP' },
-		{ id: 2, label: 'PAUSE' },
-		{ id: 3, label: 'RESTART' },
-		{ id: 4, label: 'RESUME' },
-		{ id: 5, label: 'MOVE PLAYHEAD' },
-		{ id: 6, label: 'FADE' },
-		{ id: 7, label: 'CUE POSITION' },
-		{ id: 8, label: 'JUMP TO' },
-		{ id: 9, label: 'PAN' },
-		{ id: 10, label: 'VOLUME' },
-		{ id: 11, label: 'SPEED' },
-		{ id: 12, label: 'TRACK' },
-	]
-	const TARGET_FULL_CHOICES = [
-		{ id: 0, label: 'CURRENT' },
-		{ id: 1, label: 'CUE' },
-		{ id: 2, label: 'ALL' },
-	]
-
-	const TARGET_CHOICES = [
-		{ id: 0, label: 'CURRENT' },
-		{ id: 1, label: 'CUE' },
-		{ id: 2, label: 'ALL' },
-	]
-
 	const sendOscMessage = (path, args) => {
 		self.log('debug', `Sending OSC ${self.config.host}:${self.config.port} ${path}`)
 		self.log('debug', `Sending Args ${JSON.stringify(args)}`)
@@ -57,49 +15,56 @@ module.exports = function (self) {
 					id: 'action',
 					type: 'dropdown',
 					label: 'Action',
-					default: '0',
-					choices: ACTION_CHOICES,
+					choices: CHOICES.ACTION_CHOICES,
+					default: 'go',
 				},
 				{
 					id: 'target',
 					type: 'dropdown',
 					label: 'Target',
-					default: '0',
-					choices: (event) => {},
+					choices: CHOICES.TARGET_CHOICES,
+					default: 'playhead',
+					isVisible: (options) => {
+						switch (options.action) {
+							case 'go':
+							case 'pan':
+							case 'position':
+							case 'speed':
+							case 'track':
+							case 'volume':
+								return true
+							default:
+								return false
+						}
+					},
 				},
-				// {
-				// 	id: 'target',
-				// 	type: 'dropdown',
-				// 	label: 'Target',
-				// 	default: '0',
-				// 	choices: TARGET_CHOICES,
-				// 	isVisible: (event) => {
-				// 		switch (event.actions.action) {
-				// 			case (0, 9, 10, 11, 12):
-				// 				return true
-				// 			default:
-				// 				return false
-				// 		}
-				// 	},
-				// },
-				// {
-				// 	id: 'target',
-				// 	type: 'dropdown',
-				// 	label: 'Target',
-				// 	default: '0',
-				// 	choices: TARGET_FULL_CHOICES,
-				// 	isVisible: (event) => {
-				// 		switch (event.actions.action) {
-				// 			case (1, 2, 3, 4, 6, 8):
-				// 				return true
-				// 			default:
-				// 				return false
-				// 		}
-				// 	},
-				// },
+
+				{
+					id: 'target_all',
+					type: 'dropdown',
+					label: 'Target',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					default: 'playhead',
+					isVisible: (options) => {
+						switch (options.action) {
+							case 'fade':
+							case 'pause':
+							case 'restart':
+							case 'resume':
+							case 'stop':
+								return true
+							default:
+								return false
+						}
+					},
+				},
 			],
 			callback: (event) => {
-				self.log('info', `Command: ${event.options.action}-${event.options.target}`)
+				let command = '/'
+				command += event.options.target
+				command += event.options.target_all
+				self.log('info', 'Target: ' + event.options.target_all.isVisible)
+				self.log('info', `Command: ${command}/${event.options.action}`)
 			},
 		},
 
