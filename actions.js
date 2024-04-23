@@ -16,154 +16,91 @@ module.exports = function (self) {
 					type: 'dropdown',
 					label: 'Action',
 					choices: CHOICES.ACTION_CHOICES,
-					default: 'go',
+					default: '.go',
 				},
+				// Tags are used to filter the options
 				{
-					id: 'target',
-					type: 'dropdown',
-					label: 'Target',
-					choices: CHOICES.TARGET_CHOICES,
-					default: 'playhead',
-					isVisible: (options) => {
-						switch (options.action) {
-							case 'go':
-							case 'pan':
-							case 'position':
-							case 'speed':
-							case 'track':
-							case 'volume':
-								return true
-							default:
-								return false
-						}
-					},
-				},
-
-				{
-					id: 'target_all',
-					type: 'dropdown',
-					label: 'Target',
-					choices: CHOICES.TARGET_ALL_CHOICES,
-					default: 'playhead',
-					isVisible: (options) => {
-						switch (options.action) {
-							case 'fade':
-							case 'pause':
-							case 'restart':
-							case 'resume':
-							case 'stop':
-								return true
-							default:
-								return false
-						}
-					},
-				},
-			],
-			callback: (event) => {
-				let command = '/'
-				command += event.options.target
-				command += event.options.target_all
-				self.log('info', 'Target: ' + event.options.target_all.isVisible)
-				self.log('info', `Command: ${command}/${event.options.action}`)
-			},
-		},
-
-		go: {
-			name: 'GO',
-			options: [
-				{
-					id: 'deactivate',
+					id: 'stopAll',
 					type: 'checkbox',
-					label: 'deactivate all other active cues',
-					default: true,
+					label: 'Stop all active cues first?',
+					default: false,
+					isVisible: (options) => options.action === '.go',
 				},
+
 				{
-					id: 'target',
+					id: 'target', //tag: .
 					type: 'dropdown',
-					label: 'Target',
-					choices: [
-						{
-							id: 0,
-							label: 'GO selected',
-						},
-						{
-							id: 1,
-							label: 'Specific cue',
-						},
-					],
-					default: 0,
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+					isVisible: (options) => options.action.includes('.'),
 				},
+
 				{
-					id: 'q_id',
+					id: 'target_all', //tag: *
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target all',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					allowCustom: true,
+					isVisible: (options) => options.action.includes('*'),
+				},
+
+				{
+					id: 'position', //tag: +
+					type: 'dropdown',
+					label: 'Specific point or select destination:',
+					choices: CHOICES.POSITION_CHOICES,
+					allowCustom: true,
+					isVisible: (options) => options.action.includes('+'),
+				},
+
+				{
+					id: 'jump', //tag: -
+					type: 'dropdown',
+					label: 'Select direction',
+					default: 'back',
+					choices: CHOICES.JUMP_CHOICES,
+					isVisible: (options) => options.action.includes('-'),
+				},
+
+				{
+					id: 'seconds',
 					type: 'textinput',
-					label: 'Q# (no spaces allowed)',
-					isVisible: (event) => event.options.target == 1,
+					label: 'Seconds',
+					default: 5,
+					isVisible: (options) => options.action === '-jump',
 				},
 			],
 			callback: (event) => {
-				if (event.options.deactivate) {
-					self.log('info', 'Stop all checked')
+				if (event.options.stopAll) {
 					sendOscMessage('/cue/active/stop', [])
 				}
+				let args = []
+				let command = '/cue/'
+				let target = ''
+				const tag = event.options.action.charAt(0)
+				let action = event.options.action.slice(1)
+				switch (tag) {
+					case '*': // with all
+						target = event.options.target_all + '/'
+						break
+					case '.': // current and q#
+						target = event.options.target + '/'
+						break
+					case '+': // destination
+						target = event.options.position
+						command = '/select/'
+						action = ''
+						break
+					case '-': // jump
+						action = `jump${event.options.jump}`
+						target = ''
 
-				let message = '/cue/'
-
-				if (event.options.target == 0) {
-					message += 'playhead/go'
-				} else {
-					message += event.options.q_id + '/go'
+						args.push({ type: 'f', value: parseFloat(event.options.seconds) })
 				}
-				sendOscMessage(message, [])
-			},
-		},
-		stopAll: {
-			name: 'Stop all active cues',
-			options: [],
-			callback: (event) => {
-				sendOscMessage('/cue/active/stop', [])
-			},
-		},
-		fadeAll: {
-			name: 'Fade all active cues',
-			options: [],
-			callback: () => {
-				sendOscMessage('/cue/active/fade', [])
-				self.fadingOutStatus = true
-				self.checkFeedbacks('FadingOut')
-			},
-		},
-		moveGo: {
-			name: 'Move GO position',
-			options: [
-				{
-					id: 'target',
-					label: 'Target',
-					type: 'dropdown',
-					choices: [
-						{ id: 0, label: 'First' },
-						{ id: 1, label: 'Last' },
-						{ id: 2, label: 'Previous' },
-						{ id: 3, label: 'Next' },
-						{ id: 4, label: 'Cue' },
-					],
-					default: 0,
-				},
-				{
-					id: 'q_id',
-					type: 'textinput',
-					label: 'Cue id (no spaces allowed)',
-					isVisible: (event) => event.options.target == 4,
-					default: '',
-				},
-			],
-			callback: (event) => {
-				let message = '/select/'
-				if (event.options.target == 4 && event.options.q_id != '') {
-					message += event.options.q_id
-				} else {
-					message += MOVE_POSITIONS[event.options.target]
-				}
-				sendOscMessage(message, [])
+				command = command + target + action
+				self.log('info', `Command: ${command}`)
+				sendOscMessage(command, args)
 			},
 		},
 	})
