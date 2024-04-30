@@ -42,7 +42,7 @@ module.exports = function (self) {
 					label: 'Q# (no spaces allowed) or select target all',
 					choices: CHOICES.TARGET_ALL_CHOICES,
 					allowCustom: true,
-					isVisible: (options) => options.action.includes('*'),
+					isVisible: (options) => options.action.includes('*') || options.action.includes('-'),
 				},
 
 				{
@@ -60,7 +60,7 @@ module.exports = function (self) {
 					label: 'Select direction',
 					default: 'back',
 					choices: CHOICES.JUMP_CHOICES,
-					isVisible: (options) => options.action.includes('-'),
+					isVisible: (options) => options.action === '*jump',
 				},
 
 				{
@@ -68,7 +68,7 @@ module.exports = function (self) {
 					type: 'textinput',
 					label: 'Seconds',
 					default: 5,
-					isVisible: (options) => options.action === '-jump',
+					isVisible: (options) => options.action === '*jump',
 				},
 			],
 			callback: (event) => {
@@ -94,8 +94,7 @@ module.exports = function (self) {
 						break
 					case '-': // jump
 						action = `jump${event.options.jump}`
-						target = ''
-
+						target = event.options.target_all + '/'
 						args.push({ type: 'f', value: parseFloat(event.options.seconds) })
 				}
 				command = command + target + action
@@ -103,5 +102,317 @@ module.exports = function (self) {
 				sendOscMessage(command, args)
 			},
 		},
+
+		go: {
+			name: 'GO',
+			description: 'Initiates the GO action',
+			options: [
+				{
+					id: 'stopAll',
+					type: 'checkbox',
+					label: 'Stop all active cues first?',
+					default: false,
+				},
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				if (event.options.stopAll) {
+					sendOscMessage('/cue/active/stop', [])
+				}
+				self.playing.push(self.currentCue)
+				self.log('info', 'Playing: ' + self.playing)
+				sendOscMessage(`/cue/${event.options.target}/go`, [])
+			},
+		},
+
+		stop: {
+			name: 'STOP',
+			description: 'Initiates the Cue Stop action.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/stop`, [])
+			},
+		},
+
+		select: {
+			name: 'SELECT CUE',
+			description: 'Moves the GO position in the main cue list.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.POSITION_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/select/${event.options.target}`, [])
+			},
+		},
+
+		cuepoint: {
+			name: 'CUE POINT',
+			description: 'The playback position of the targeted cue will jump to the value set in the specified cue point.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+				},
+				{
+					id: 'position',
+					type: 'dropdown',
+					label: 'Cue point number or select position',
+					choices: CHOICES.POSITION_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/cuepoint`, [
+					{
+						type: 's',
+						value: event.options.position,
+					},
+				])
+			},
+		},
+
+		fade: {
+			name: 'FADE',
+			description: 'Initiates the Fade Out action',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/fade`, [])
+			},
+		},
+
+		jump: {
+			name: 'JUMP',
+			description: 'The playback position will jump by a specific amount.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					allowCustom: true,
+				},
+				{
+					id: 'direction',
+					type: 'dropdown',
+					label: 'Cue point number or select position',
+					choices: CHOICES.DIRECTION_CHOICES,
+				},
+				{
+					id: 'ammount',
+					type: 'number',
+					label: 'Size of the jump',
+					default: '5',
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/jump${event.options.direction}`, [
+					{
+						type: 'f',
+						value: parseFloat(event.options.ammount),
+					},
+				])
+			},
+		},
+
+		pan: {
+			name: 'PAN',
+			description: 'Changes the pan position of the specified playing cue without changing the cue properties.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+				},
+				{
+					id: 'direction',
+					type: 'dropdown',
+					label: 'Cue point number or select position',
+					choices: CHOICES.PAN_CHOICES,
+				},
+				{
+					id: 'ammount',
+					type: 'number',
+					label: 'Pan ammount',
+					default: '0',
+					isVisible: (options) => options.direcction != 'revert',
+				},
+			],
+			callback: (event) => {
+				let message = `/cue/${event.options.target}/`
+
+				message += event.options.direcction == 'absolute' ? 'pan' : 'pan/' + event.options.direction
+				sendOscMessage(message, [
+					{
+						type: 'i',
+						value: parseInt(event.options.ammount),
+					},
+				])
+			},
+		},
+
+		pause: {
+			name: 'PAUSE',
+			description: 'The cue will be paused if possible.',
+			options: [
+				{
+					id: 'toggle',
+					type: 'checkbox',
+					label: 'Toggle mode',
+					default: false,
+				},
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				const message = event.options.toggle
+					? `/cue/${event.options.target}/pausetoggle`
+					: `/cue/${event.options.target}/pause`
+				sendOscMessage(message, [])
+			},
+		},
+
+		restart: {
+			name: 'RESTART',
+			description: 'The cue will be restarted from the beginning.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/restart`, [])
+			},
+		},
+
+		resume: {
+			name: 'RESUME',
+			description: 'The cue will be resumed if possible.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_ALL_CHOICES,
+					allowCustom: true,
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/resume`, [])
+			},
+		},
+
+		position: {
+			name: 'MOVE TO POSITION',
+			description: 'The playback position will jump to the specified time.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+				},
+				{
+					id: 'position',
+					type: 'number',
+					label: 'Position from the beggining in seconds',
+					default: '0',
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/position`, [
+					{
+						type: 'f',
+						value: parseFloat(event.options.position),
+					},
+				])
+			},
+		},
+
+		speed: {
+			name: 'SPEED',
+			description: 'Changes the speed of the specified playing cue without changing the cue properties',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+				},
+				{
+					id: 'direction',
+					type: 'dropdown',
+					label: 'Cue point number or select position',
+					choices: CHOICES.PAN_CHOICES,
+				},
+				{
+					id: 'ammount',
+					type: 'number',
+					label: 'Pan ammount',
+					default: '0',
+					isVisible: (options) => options.direcction != 'revert',
+				},
+			],
+			callback: (event) => {
+				let message = `/cue/${event.options.target}/`
+
+				message += event.options.direcction == 'absolute' ? 'pan' : 'pan/' + event.options.direction
+				sendOscMessage(message, [
+					{
+						type: 'i',
+						value: parseInt(event.options.ammount),
+					},
+				])
+			},
+		},
+
+		track: {},
+
+		volume: {},
+
+		stopwatch: {},
 	})
 }

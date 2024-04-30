@@ -8,6 +8,7 @@ module.exports = Object.freeze({
 		{ id: '.go', label: 'GO' },
 		{ id: '*stop', label: 'STOP' },
 		{ id: '*pause', label: 'PAUSE' },
+		{ id: '*pausetoggle', label: 'PAUSE TOGGLE' },
 		{ id: '*restart', label: 'RESTART' },
 		{ id: '*resume', label: 'RESUME' },
 		{ id: '+select', label: 'MOVE PLAYHEAD' },
@@ -21,11 +22,11 @@ module.exports = Object.freeze({
 	],
 
 	TARGET_ALL_CHOICES: [
-		{ id: 'playhead', label: 'CURRENT' },
+		{ id: 'current', label: 'CURRENT' },
 		{ id: 'active', label: 'ALL' },
 	],
 
-	TARGET_CHOICES: [{ id: 'playhead', label: 'CURRENT' }],
+	TARGET_CHOICES: [{ id: 'current', label: 'CURRENT' }],
 
 	POSITION_CHOICES: [
 		{ id: 'first', label: 'FIRST' },
@@ -34,9 +35,16 @@ module.exports = Object.freeze({
 		{ id: 'prev', label: 'PREVIOUS' },
 	],
 
-	JUMP_CHOICES: [
+	DIRECTION_CHOICES: [
 		{ id: 'back', label: 'BACK' },
 		{ id: 'fwd', label: 'FORDWARD' },
 		{ id: 'end', label: 'END' },
+	],
+
+	PAN_CHOICES: [
+		{ id: 'absolute', label: 'ABSOLUTE' },
+		{ id: '-', label: 'LEFT' },
+		{ id: '+', label: 'RIGHT' },
+		{ id: 'revert', label: 'REVERT' },
 	],
 })

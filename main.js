@@ -37,7 +37,9 @@ class MultiplayInstance extends InstanceBase {
 		})
 
 		self.listener.on('message', function (message) {
-			// self.log('info', 'Message: ' + message)
+			if (!message[0].includes('elapsed') && !message[0].includes('remaining')) {
+				self.log('info', 'Message: ' + message)
+			}
 			switch (message[0]) {
 				case '/status/elapsed':
 					self.timeElapsed = message[1]
@@ -48,7 +50,8 @@ class MultiplayInstance extends InstanceBase {
 					self.setVariableValues({ t_remain: self.timeRemaining })
 					break
 				case '/status/current/qdesc':
-					self.setVariableValues({ q_description: message[1] })
+					self.currentCue = message[1]
+					self.setVariableValues({ q_description: self.currentCue })
 					break
 				case '/status/stopall':
 					self.stopAllStatus = message[1] === true
@@ -87,6 +90,8 @@ class MultiplayInstance extends InstanceBase {
 		self.nextStatus = false
 		self.timeRemaining = ''
 		self.timeElapsed = ''
+		self.currentCue = ''
+		self.playing = []
 	}
 
 	// When module gets deleted
