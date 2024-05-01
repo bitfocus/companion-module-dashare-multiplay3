@@ -40,6 +40,7 @@ module.exports = async function (self) {
 				}
 			},
 		},
+
 		FadingOut: {
 			name: 'Fading Out',
 			type: 'boolean',
@@ -53,6 +54,7 @@ module.exports = async function (self) {
 				return self.fadingOutStatus
 			},
 		},
+
 		WarningTime: {
 			name: 'End warning',
 			type: 'boolean',
