@@ -105,37 +105,23 @@ module.exports = function (self) {
 
 		go: {
 			name: 'GO',
-<<<<<<< HEAD
 			description: 'Initiates the GO action',
 			options: [
 				{
 					id: 'stopAll',
 					type: 'checkbox',
 					label: 'Stop all active cues first?',
-=======
-			options: [
-				{
-					id: 'stop',
-					label: 'Stop all other active cues?',
-					type: 'checkbox',
->>>>>>> e88655819c972e10093dce6538f4271c7848aa5e
 					default: false,
 				},
 				{
 					id: 'target',
-<<<<<<< HEAD
 					type: 'dropdown',
 					label: 'Q# (no spaces allowed) or select target',
-=======
-					label: 'Select Q# (no spaces allowed) or current cue',
-					type: 'dropdown',
->>>>>>> e88655819c972e10093dce6538f4271c7848aa5e
 					choices: CHOICES.TARGET_CHOICES,
 					allowCustom: true,
 				},
 			],
 			callback: (event) => {
-<<<<<<< HEAD
 				if (event.options.stopAll) {
 					sendOscMessage('/cue/active/stop', [])
 				}
@@ -428,10 +414,5 @@ module.exports = function (self) {
 		volume: {},
 
 		stopwatch: {},
-=======
-				self.log('info', 'Go normal')
-			},
-		},
->>>>>>> e88655819c972e10093dce6538f4271c7848aa5e
 	})
 }
