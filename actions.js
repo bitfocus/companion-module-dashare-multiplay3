@@ -259,14 +259,17 @@ module.exports = function (self) {
 				{
 					id: 'direction',
 					type: 'dropdown',
-					label: 'Cue point number or select position',
+					label: 'Direction',
 					choices: CHOICES.PAN_CHOICES,
+					default: '+',
 				},
 				{
 					id: 'ammount',
 					type: 'number',
 					label: 'Pan ammount',
 					default: '0',
+					max: 100,
+					min: 0,
 					isVisible: (options) => options.direcction != 'revert',
 				},
 			],
@@ -385,13 +388,14 @@ module.exports = function (self) {
 				{
 					id: 'direction',
 					type: 'dropdown',
-					label: 'Cue point number or select position',
-					choices: CHOICES.PAN_CHOICES,
+					label: 'Select behaviour',
+					choices: CHOICES.SPEED_CHOICES,
+					default: '+',
 				},
 				{
 					id: 'ammount',
 					type: 'number',
-					label: 'Pan ammount',
+					label: 'Speed ammount',
 					default: '0',
 					isVisible: (options) => options.direcction != 'revert',
 				},
@@ -399,7 +403,7 @@ module.exports = function (self) {
 			callback: (event) => {
 				let message = `/cue/${event.options.target}/`
 
-				message += event.options.direcction == 'absolute' ? 'pan' : 'pan/' + event.options.direction
+				message += event.options.direcction == 'absolute' ? 'speed' : 'speed/' + event.options.direction
 				sendOscMessage(message, [
 					{
 						type: 'i',
@@ -409,10 +413,90 @@ module.exports = function (self) {
 			},
 		},
 
-		track: {},
+		track: {
+			name: 'SELECT TRACK',
+			description: 'Playback will jump to the specified track in a Play List cue.',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+				},
+				{
+					id: 'selection',
+					type: 'dropdown',
+					label: 'Select track index or label',
+					choices: CHOICES.POSITION_CHOICES,
+					default: 'first',
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/cue/${event.options.target}/track`, [
+					{
+						type: 's',
+						value: event.target.selection,
+					},
+				])
+			},
+		},
 
-		volume: {},
+		volume: {
+			name: 'VOLUME',
+			description: 'Changes the volume of the specified playing cue without changing the cue properties',
+			options: [
+				{
+					id: 'target',
+					type: 'dropdown',
+					label: 'Q# (no spaces allowed) or select target',
+					choices: CHOICES.TARGET_CHOICES,
+					allowCustom: true,
+				},
+				{
+					id: 'direction',
+					type: 'dropdown',
+					label: 'Select behaviour',
+					choices: CHOICES.SPEED_CHOICES,
+					default: '+',
+				},
+				{
+					id: 'ammount',
+					type: 'number',
+					label: 'Speed ammount',
+					default: '0',
+					max: 60,
+					min: 0,
+					isVisible: (options) => options.direcction != 'revert',
+				},
+			],
+			callback: (event) => {
+				let message = `/cue/${event.options.target}/`
 
-		stopwatch: {},
+				message += event.options.direcction == 'absolute' ? 'volume' : 'volume/' + event.options.direction
+				sendOscMessage(message, [
+					{
+						type: 'i',
+						value: parseInt(event.options.ammount),
+					},
+				])
+			},
+		},
+
+		stopwatch: {
+			name: 'STOPWATCH',
+			description: 'Controls the stopwatch function.',
+			options: [
+				{
+					id: 'action',
+					type: 'dropdown',
+					label: 'Action',
+					choices: CHOICES.STOPWATCH_CHOICES,
+				},
+			],
+			callback: (event) => {
+				sendOscMessage(`/stopwatch/${event.options.action}`, [])
+			},
+		},
 	})
 }

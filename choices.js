@@ -47,4 +47,17 @@ module.exports = Object.freeze({
 		{ id: '+', label: 'RIGHT' },
 		{ id: 'revert', label: 'REVERT' },
 	],
+
+	SPEED_CHOICES: [
+		{ id: 'absolute', label: 'ABSOLUTE' },
+		{ id: '-', label: 'UP' },
+		{ id: '+', label: 'DOWN' },
+		{ id: 'revert', label: 'REVERT' },
+	],
+
+	STOPWATCH_CHOICES: [
+		{ id: 'start', label: 'START' },
+		{ id: 'stop', label: 'STOP' },
+		{ id: 'reset', label: 'RESET' },
+	],
 })
