@@ -1,3 +1,5 @@
-## Your module
+## DA-SHARE MULTIPLAY 3
 
-Write some help for your users here!
+\*\*[MultiPlay](https://www.da-share.com/software/multiplay/)\*\* is a Windows based program designed to play cues for theatre or corporate use writen by [David Duffy](david@da-share.com).
+
+This module controls the program by OSC messages as described on the [on-line help](https://da-share.com/help/multiplay3/).
