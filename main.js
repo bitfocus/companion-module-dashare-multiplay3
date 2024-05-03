@@ -59,16 +59,17 @@ class MultiplayInstance extends InstanceBase {
 					break
 				case '/status/fadeall':
 					self.fadeAllStatus = message[1] === true
-					self.fadingOutStatus = false
 					self.setVariableValues({ st_fadeAll: self.fadeAllStatus })
 					break
 				case '/status/go':
-					self.goStatus = message[1] === true
+					// self.goStatus = message[1] === true
+					self.goStatus = !!message[1]
 					self.setVariableValues({ st_go: self.goStatus })
 					break
 				case '/status/select/prev':
 					self.prevStatus = message[1] === true
 					self.setVariableValues({ st_prev: self.prevStatus })
+					break
 				case '/status/select/next':
 					self.nextStatus = message[1] === true
 					self.setVariableValues({ st_next: self.nextStatus })

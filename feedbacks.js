@@ -41,17 +41,17 @@ module.exports = async function (self) {
 			},
 		},
 
-		FadingOut: {
-			name: 'Fading Out',
+		active: {
+			name: 'Current cue status',
 			type: 'boolean',
-			label: 'Activates when the active cues are fading 0ut',
+			label: 'The current cue is active',
 			defaultStyle: {
 				bgcolor: combineRgb(0, 0, 0),
-				color: combineRgb(255, 255, 0),
+				color: combineRgb(0, 255, 0),
 			},
 			options: [],
 			callback: () => {
-				return self.fadingOutStatus
+				return !self.goStatus && self.nextStatus
 			},
 		},
 

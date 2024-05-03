@@ -8,101 +8,6 @@ module.exports = function (self) {
 	}
 
 	self.setActionDefinitions({
-		actions: {
-			name: 'Actions',
-			options: [
-				{
-					id: 'action',
-					type: 'dropdown',
-					label: 'Action',
-					choices: CHOICES.ACTION_CHOICES,
-					default: '.go',
-				},
-				// Tags are used to filter the options
-				{
-					id: 'stopAll',
-					type: 'checkbox',
-					label: 'Stop all active cues first?',
-					default: false,
-					isVisible: (options) => options.action === '.go',
-				},
-
-				{
-					id: 'target', //tag: .
-					type: 'dropdown',
-					label: 'Q# (no spaces allowed) or select target',
-					choices: CHOICES.TARGET_CHOICES,
-					allowCustom: true,
-					isVisible: (options) => options.action.includes('.'),
-				},
-
-				{
-					id: 'target_all', //tag: *
-					type: 'dropdown',
-					label: 'Q# (no spaces allowed) or select target all',
-					choices: CHOICES.TARGET_ALL_CHOICES,
-					allowCustom: true,
-					isVisible: (options) => options.action.includes('*') || options.action.includes('-'),
-				},
-
-				{
-					id: 'position', //tag: +
-					type: 'dropdown',
-					label: 'Specific point or select destination:',
-					choices: CHOICES.POSITION_CHOICES,
-					allowCustom: true,
-					isVisible: (options) => options.action.includes('+'),
-				},
-
-				{
-					id: 'jump', //tag: -
-					type: 'dropdown',
-					label: 'Select direction',
-					default: 'back',
-					choices: CHOICES.JUMP_CHOICES,
-					isVisible: (options) => options.action === '*jump',
-				},
-
-				{
-					id: 'seconds',
-					type: 'textinput',
-					label: 'Seconds',
-					default: 5,
-					isVisible: (options) => options.action === '*jump',
-				},
-			],
-			callback: (event) => {
-				if (event.options.stopAll) {
-					sendOscMessage('/cue/active/stop', [])
-				}
-				let args = []
-				let command = '/cue/'
-				let target = ''
-				const tag = event.options.action.charAt(0)
-				let action = event.options.action.slice(1)
-				switch (tag) {
-					case '*': // with all
-						target = event.options.target_all + '/'
-						break
-					case '.': // current and q#
-						target = event.options.target + '/'
-						break
-					case '+': // destination
-						target = event.options.position
-						command = '/select/'
-						action = ''
-						break
-					case '-': // jump
-						action = `jump${event.options.jump}`
-						target = event.options.target_all + '/'
-						args.push({ type: 'f', value: parseFloat(event.options.seconds) })
-				}
-				command = command + target + action
-				self.log('info', `Command: ${command}`)
-				sendOscMessage(command, args)
-			},
-		},
-
 		go: {
 			name: 'GO',
 			description: 'Initiates the GO action',
@@ -266,23 +171,41 @@ module.exports = function (self) {
 				{
 					id: 'ammount',
 					type: 'number',
-					label: 'Pan ammount',
-					default: '0',
+					label: 'Pan ammount (0 to 100)',
+					default: '1',
 					max: 100,
 					min: 0,
-					isVisible: (options) => options.direcction != 'revert',
+					isVisible: (options) => options.direction === '+' || options.direction === '-',
+				},
+
+				{
+					id: 'absolute',
+					type: 'number',
+					label: 'Pan position (-100 full left, 100 full right, 0 center)',
+					max: 100,
+					min: -100,
+					default: 0,
+					isVisible: (options) => options.direction == 'absolute',
 				},
 			],
 			callback: (event) => {
-				let message = `/cue/${event.options.target}/`
+				let message = `/cue/${event.options.target}/pan`
+				let args = { type: 'i', value: 0 }
+				switch (event.options.direction) {
+					case '+':
+					case '-':
+						message += '/' + event.options.direction
+						args.value = parseInt(event.options.ammount)
+						break
+					case 'absolute':
+						args.value = parseInt(event.options.absolute)
+						break
+					case 'revert':
+						message += '/' + event.options.direction
+						args.value = 0
+				}
 
-				message += event.options.direcction == 'absolute' ? 'pan' : 'pan/' + event.options.direction
-				sendOscMessage(message, [
-					{
-						type: 'i',
-						value: parseInt(event.options.ammount),
-					},
-				])
+				sendOscMessage(message, [args])
 			},
 		},
 
@@ -386,30 +309,49 @@ module.exports = function (self) {
 					allowCustom: true,
 				},
 				{
-					id: 'direction',
+					id: 'behaviour',
 					type: 'dropdown',
 					label: 'Select behaviour',
 					choices: CHOICES.SPEED_CHOICES,
-					default: '+',
+					default: 'relative',
 				},
 				{
-					id: 'ammount',
+					id: 'relative',
 					type: 'number',
-					label: 'Speed ammount',
+					label: 'Speed variation (-100 to 100)',
+					max: 100,
+					min: -100,
 					default: '0',
-					isVisible: (options) => options.direcction != 'revert',
+					isVisible: (options) => options.behaviour == 'relative',
+				},
+				{
+					id: 'absolute',
+					type: 'number',
+					label: 'Speed (50 half speed, 150 1.5 speed)',
+					max: 50,
+					min: 150,
+					default: 0,
+					isVisible: (options) => options.direction == 'absolute',
 				},
 			],
 			callback: (event) => {
-				let message = `/cue/${event.options.target}/`
+				let message = `/cue/${event.options.target}/speed`
+				let arg = { type: 'i', value: 0 }
 
-				message += event.options.direcction == 'absolute' ? 'speed' : 'speed/' + event.options.direction
-				sendOscMessage(message, [
-					{
-						type: 'i',
-						value: parseInt(event.options.ammount),
-					},
-				])
+				switch (event.options.behaviour) {
+					case 'absolute':
+						arg.value = parseInt(event.options.absolute)
+						break
+					case 'relative':
+						const variation = parseInt(event.options.relative)
+						variation >= 0 ? (message += '/+') : (message += '/-')
+						arg.value = Math.abs(variation)
+						break
+					case 'revert':
+						message += '/revert'
+				}
+
+				sendOscMessage(message, [arg])
 			},
 		},
 
@@ -463,8 +405,8 @@ module.exports = function (self) {
 				{
 					id: 'ammount',
 					type: 'number',
-					label: 'Speed ammount',
-					default: '0',
+					label: 'Volume change (0 to 60)',
+					default: '1',
 					max: 60,
 					min: 0,
 					isVisible: (options) => options.direcction != 'revert',
