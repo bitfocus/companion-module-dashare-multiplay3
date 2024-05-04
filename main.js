@@ -148,6 +148,10 @@ class MultiplayInstance extends InstanceBase {
 	updateVariableDefinitions() {
 		UpdateVariableDefinitions(this)
 	}
+
+	updatePresets() {
+		UpdatePresets(this)
+	}
 }
 
 runEntrypoint(MultiplayInstance, UpgradeScripts)
