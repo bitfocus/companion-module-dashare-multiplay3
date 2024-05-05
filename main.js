@@ -20,6 +20,7 @@ class MultiplayInstance extends InstanceBase {
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
 		this.updateVariableDefinitions() // export variable definitions
+		this.updatePresets()
 		this.initOsc()
 		this.initVariables()
 	}

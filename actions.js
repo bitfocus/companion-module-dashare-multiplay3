@@ -331,7 +331,7 @@ module.exports = function (self) {
 					max: 50,
 					min: 150,
 					default: 0,
-					isVisible: (options) => options.direction == 'absolute',
+					isVisible: (options) => options.behaviour == 'absolute',
 				},
 			],
 			callback: (event) => {
@@ -396,32 +396,49 @@ module.exports = function (self) {
 					allowCustom: true,
 				},
 				{
-					id: 'direction',
+					id: 'behaviour',
 					type: 'dropdown',
 					label: 'Select behaviour',
 					choices: CHOICES.SPEED_CHOICES,
 					default: '+',
 				},
 				{
-					id: 'ammount',
+					id: 'absolute',
 					type: 'number',
-					label: 'Volume change (0 to 60)',
+					label: 'Set volume (0 to -60)',
+					default: '1',
+					max: -60,
+					min: 0,
+					isVisible: (options) => options.behaviour == 'absolute',
+				},
+				{
+					id: 'relative',
+					type: 'number',
+					label: 'Volume change (-60 to 60)',
 					default: '1',
 					max: 60,
-					min: 0,
-					isVisible: (options) => options.direcction != 'revert',
+					min: -60,
+					isVisible: (options) => options.behaviour == 'relative',
 				},
 			],
 			callback: (event) => {
-				let message = `/cue/${event.options.target}/`
+				let message = `/cue/${event.options.target}/volume`
+				let arg = { type: 'i', value: 0 }
 
-				message += event.options.direcction == 'absolute' ? 'volume' : 'volume/' + event.options.direction
-				sendOscMessage(message, [
-					{
-						type: 'i',
-						value: parseInt(event.options.ammount),
-					},
-				])
+				switch (event.options.behaviour) {
+					case 'absolute':
+						arg.value = parseInt(event.options.absolute)
+						break
+					case 'relative':
+						const variation = parseInt(event.options.relative)
+						variation >= 0 ? (message += '/+') : (message += '/-')
+						arg.value = Math.abs(variation)
+						break
+					case 'revert':
+						message += '/revert'
+				}
+
+				sendOscMessage(message, [arg])
 			},
 		},
 
