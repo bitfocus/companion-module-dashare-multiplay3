@@ -387,7 +387,7 @@ module.exports = function (self) {
 
 		volume_up: {
 			type: 'button',
-			category: 'CURRENT CUE SETTINGS',
+			category: 'CURRENT CUE ADJUSTMENTS',
 			name: `VOL UP`,
 			style: {
 				text: `+`,
@@ -424,7 +424,7 @@ module.exports = function (self) {
 
 		volume_down: {
 			type: 'button',
-			category: 'CURRENT CUE SETTINGS',
+			category: 'CURRENT CUE ADJUSTMENTS',
 			name: `VOL DOWN`,
 			style: {
 				text: `-`,
@@ -461,7 +461,7 @@ module.exports = function (self) {
 
 		volume_revert: {
 			type: 'button',
-			category: 'CURRENT CUE SETTINGS',
+			category: 'CURRENT CUE ADJUSTMENTS',
 			name: `VOL REVERT`,
 			style: {
 				text: `VOL`,
@@ -477,6 +477,226 @@ module.exports = function (self) {
 							options: {
 								target: 'current',
 								behaviour: 'revert',
+							},
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [
+				{
+					feedbackId: 'active',
+					options: {},
+					style: {
+						color: ACTIVE_TEXT,
+						bgcolor: ACTIVE_BACKGROUND,
+					},
+				},
+			],
+		},
+
+		speed_up: {
+			type: 'button',
+			category: 'CURRENT CUE ADJUSTMENTS',
+			name: `SPEED UP`,
+			style: {
+				text: `+`,
+				size: '24',
+				color: INACTIVE_TEXT,
+				bgcolor: INACTIVE_BACKGROUND,
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'speed',
+							options: {
+								target: 'current',
+								behaviour: 'relative',
+								relative: '1',
+							},
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [
+				{
+					feedbackId: 'active',
+					options: {},
+					style: {
+						color: ACTIVE_TEXT,
+						bgcolor: ACTIVE_BACKGROUND,
+					},
+				},
+			],
+		},
+
+		speed_down: {
+			type: 'button',
+			category: 'CURRENT CUE ADJUSTMENTS',
+			name: `SPEED DOWN`,
+			style: {
+				text: `-`,
+				size: 'Auto',
+				color: INACTIVE_TEXT,
+				bgcolor: INACTIVE_BACKGROUND,
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'speed',
+							options: {
+								target: 'current',
+								behaviour: 'relative',
+								relative: '-1',
+							},
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [
+				{
+					feedbackId: 'active',
+					options: {},
+					style: {
+						color: ACTIVE_TEXT,
+						bgcolor: ACTIVE_BACKGROUND,
+					},
+				},
+			],
+		},
+
+		speed_revert: {
+			type: 'button',
+			category: 'CURRENT CUE ADJUSTMENTS',
+			name: `SPEED REVERT`,
+			style: {
+				text: `SPEED`,
+				size: '18',
+				color: INACTIVE_TEXT,
+				bgcolor: INACTIVE_BACKGROUND,
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'speed',
+							options: {
+								target: 'current',
+								behaviour: 'revert',
+							},
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [
+				{
+					feedbackId: 'active',
+					options: {},
+					style: {
+						color: ACTIVE_TEXT,
+						bgcolor: ACTIVE_BACKGROUND,
+					},
+				},
+			],
+		},
+
+		pan_left: {
+			type: 'button',
+			category: 'CURRENT CUE ADJUSTMENTS',
+			name: `PAN LEFT`,
+			style: {
+				text: `<`,
+				size: 'Auto',
+				color: INACTIVE_TEXT,
+				bgcolor: INACTIVE_BACKGROUND,
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'pan',
+							options: {
+								target: 'current',
+								direction: '-',
+								ammount: '1',
+							},
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [
+				{
+					feedbackId: 'active',
+					options: {},
+					style: {
+						color: ACTIVE_TEXT,
+						bgcolor: ACTIVE_BACKGROUND,
+					},
+				},
+			],
+		},
+
+		pan_right: {
+			type: 'button',
+			category: 'CURRENT CUE ADJUSTMENTS',
+			name: `PAN RIGHT`,
+			style: {
+				text: `>`,
+				size: 'Auto',
+				color: INACTIVE_TEXT,
+				bgcolor: INACTIVE_BACKGROUND,
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'pan',
+							options: {
+								target: 'current',
+								direction: '+',
+								ammount: '1',
+							},
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [
+				{
+					feedbackId: 'active',
+					options: {},
+					style: {
+						color: ACTIVE_TEXT,
+						bgcolor: ACTIVE_BACKGROUND,
+					},
+				},
+			],
+		},
+
+		pan_revert: {
+			type: 'button',
+			category: 'CURRENT CUE ADJUSTMENTS',
+			name: `VOL REVERT`,
+			style: {
+				text: `PAN`,
+				size: '18',
+				color: INACTIVE_TEXT,
+				bgcolor: INACTIVE_BACKGROUND,
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'pan',
+							options: {
+								target: 'current',
+								direction: 'revert',
 							},
 						},
 					],
