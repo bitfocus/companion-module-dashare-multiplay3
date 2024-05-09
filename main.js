@@ -23,7 +23,6 @@ class MultiplayInstance extends InstanceBase {
 		this.updatePresets()
 		this.initOsc()
 		this.initVariables()
-		this.getStates() //Rapidly move the playhead to get feedback from Multiplay
 	}
 
 	initOsc() {
@@ -95,29 +94,6 @@ class MultiplayInstance extends InstanceBase {
 		self.timeRemaining = ''
 		self.timeElapsed = ''
 		self.currentCue = ''
-		self.playing = []
-	}
-
-	getStates() {
-		const self = this
-		const old_currentCue = ''
-
-		self.oscSend(self.config.host, self.config.port, '/select/next', [])
-		setTimeout(
-			function () {
-				if (self.currentCue != '') {
-					self.nextStatus = true
-					self.goStatus = true
-					self.oscSend(self.config.host, self.config.port, '/select/prev', [])
-				}
-				setTimeOut(function () {
-					const old_currentCue = self.currentCue
-				}, 5)
-			}.bind(self),
-			5
-		)
-
-		set
 	}
 
 	// When module gets deleted

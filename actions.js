@@ -30,8 +30,6 @@ module.exports = function (self) {
 				if (event.options.stopAll) {
 					sendOscMessage('/cue/active/stop', [])
 				}
-				self.playing.push(self.currentCue)
-				self.log('info', 'Playing: ' + self.playing)
 				sendOscMessage(`/cue/${event.options.target}/go`, [])
 			},
 		},

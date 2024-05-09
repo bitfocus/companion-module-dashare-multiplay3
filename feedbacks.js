@@ -2,10 +2,10 @@ const { combineRgb } = require('@companion-module/base')
 
 module.exports = async function (self) {
 	self.setFeedbackDefinitions({
-		CheckState: {
-			name: 'Action states',
+		checkState: {
+			name: 'ACTION STATES',
 			type: 'boolean',
-			label: 'Action enabled states',
+			label: 'ACTION ENABLED STATES',
 			defaultStyle: {
 				bgcolor: combineRgb(0, 0, 0),
 				color: combineRgb(0, 255, 0),
@@ -55,7 +55,7 @@ module.exports = async function (self) {
 			},
 		},
 
-		WarningTime: {
+		warningTime: {
 			name: 'End warning',
 			type: 'boolean',
 			label: 'Set time to ends',

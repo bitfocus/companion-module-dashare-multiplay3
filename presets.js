@@ -12,12 +12,11 @@ const HIGHLIGHT = combineRgb(204, 0, 204)
 module.exports = function (self) {
 	self.setPresetDefinitions({
 		go: {
-			type: 'button', // This must be 'button' for now
-			category: 'Actions', // This groups presets into categories in the ui. Try to create logical groups to help users find presets
-			name: `GO`, // A name for the preset. Shown to the user when they hover over it
+			type: 'button',
+			category: 'ACTIONS',
+			name: `GO`,
 			style: {
-				// This is the minimal set of style properties you must define
-				text: `GO`, // You can use variables from your module here
+				text: `GO`,
 				size: 'auto',
 				color: INACTIVE_TEXT,
 				bgcolor: INACTIVE_BACKGROUND,
@@ -26,10 +25,8 @@ module.exports = function (self) {
 				{
 					down: [
 						{
-							// add an action on down press
 							actionId: 'go',
 							options: {
-								// options values to use
 								stopAll: true,
 								target: 'current',
 							},
@@ -40,13 +37,12 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
 					options: {
 						action: 0,
 					},
 					style: {
-						// This is the minimal set of style properties you must define
-						text: `GO`, // You can use variables from your module here
+						text: `GO`,
 						size: 'auto',
 						color: GREEN,
 						bgcolor: HIGHLIGHT,
@@ -56,12 +52,11 @@ module.exports = function (self) {
 		},
 
 		stop_all: {
-			type: 'button', // This must be 'button' for now
-			category: 'Actions', // This groups presets into categories in the ui. Try to create logical groups to help users find presets
-			name: `STOP ALL`, // A name for the preset. Shown to the user when they hover over it
+			type: 'button',
+			category: 'ACTIONS',
+			name: `STOP ALL`,
 			style: {
-				// This is the minimal set of style properties you must define
-				text: `STOP`, // You can use variables from your module here
+				text: `STOP ALL`,
 				size: '18',
 				color: INACTIVE_TEXT,
 				bgcolor: INACTIVE_BACKGROUND,
@@ -70,10 +65,8 @@ module.exports = function (self) {
 				{
 					down: [
 						{
-							// add an action on down press
 							actionId: 'stop',
 							options: {
-								// options values to use
 								target: 'active',
 							},
 						},
@@ -83,7 +76,7 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
 					options: {
 						action: 1,
 					},
@@ -97,10 +90,10 @@ module.exports = function (self) {
 
 		pause_all: {
 			type: 'button',
-			category: 'Actions',
+			category: 'ACTIONS',
 			name: `PAUSE ALL`,
 			style: {
-				text: `PAUSE`,
+				text: `PAUSE ALL`,
 				size: '18',
 				color: INACTIVE_TEXT,
 				bgcolor: INACTIVE_BACKGROUND,
@@ -121,7 +114,7 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
 					options: {
 						action: 1,
 					},
@@ -135,10 +128,10 @@ module.exports = function (self) {
 
 		fade_all: {
 			type: 'button',
-			category: 'Actions',
+			category: 'ACTIONS',
 			name: `FADE ALL`,
 			style: {
-				text: `FADE`,
+				text: `FADE ALL`,
 				size: '18',
 				color: INACTIVE_TEXT,
 				bgcolor: INACTIVE_BACKGROUND,
@@ -158,7 +151,44 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
+					options: {
+						action: 2,
+					},
+					style: {
+						color: ACTIVE_TEXT,
+						bgcolor: ACTIVE_BACKGROUND,
+					},
+				},
+			],
+		},
+
+		restart_all: {
+			type: 'button',
+			category: 'ACTIONS',
+			name: `RESTART ALL`,
+			style: {
+				text: `RESTART ALL`,
+				size: '14',
+				color: INACTIVE_TEXT,
+				bgcolor: INACTIVE_BACKGROUND,
+			},
+			steps: [
+				{
+					down: [
+						{
+							actionId: 'restart',
+							options: {
+								target: 'active',
+							},
+						},
+					],
+					up: [],
+				},
+			],
+			feedbacks: [
+				{
+					feedbackId: 'checkState',
 					options: {
 						action: 2,
 					},
@@ -195,7 +225,7 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
 					options: {
 						action: 4,
 					},
@@ -232,7 +262,7 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
 					options: {
 						action: 3,
 					},
@@ -269,7 +299,7 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
 					options: {
 						action: 3,
 					},
@@ -306,7 +336,7 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'CheckState',
+					feedbackId: 'checkState',
 					options: {
 						action: 4,
 					},
@@ -318,7 +348,7 @@ module.exports = function (self) {
 			],
 		},
 
-		remaining: {
+		t_remaining: {
 			type: 'button',
 			category: 'INFO',
 			name: `TIME REMAINING`,
@@ -336,18 +366,18 @@ module.exports = function (self) {
 			],
 			feedbacks: [
 				{
-					feedbackId: 'WarningTime',
+					feedbackId: 'warningTime',
 					options: {
 						seconds: 5,
 					},
 					style: {
-						color: ACTIVE_TEXT,
+						color: RED,
 					},
 				},
 			],
 		},
 
-		elapsed: {
+		t_elapsed: {
 			type: 'button',
 			category: 'INFO',
 			name: `TIME ELAPSED`,
@@ -366,7 +396,7 @@ module.exports = function (self) {
 			feedbacks: [],
 		},
 
-		current: {
+		current_cue: {
 			type: 'button',
 			category: 'INFO',
 			name: `CURRENT CUE`,
