@@ -1,9 +1,9 @@
 {
-	"id": "companion-module-dashare-multiplay",
-	"name": "companion-module-dashare-multiplay",
+	"id": "companion-module-dashare-multiplay3",
+	"name": "companion-module-dashare-multiplay3",
 	"shortname": "multiplay",
 	"description": "OSC for DaShare Multiplay 3 software",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "MIT",
 	"repository": "",
 	"bugs": "",
