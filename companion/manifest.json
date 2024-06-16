@@ -1,6 +1,6 @@
 {
-	"id": "companion-module-dashare-multiplay3",
-	"name": "companion-module-dashare-multiplay3",
+	"id": "dashare-multiplay3",
+	"name": "dashare-multiplay3",
 	"shortname": "multiplay",
 	"description": "OSC for DaShare Multiplay 3 software",
 	"version": "1.0.1",
@@ -19,7 +19,7 @@
 		"apiVersion": "0.0.0",
 		"entrypoint": "../main.js"
 	},
-	"legacyIds": [],
+	"legacyIds": ["companion-module-dashare-multiplay3"],
 	"manufacturer": "da-Share",
 	"products": ["MultiPlay 3"],
 	"keywords": ["multiplay", "osc"]
