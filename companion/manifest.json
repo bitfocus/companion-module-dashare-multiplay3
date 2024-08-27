@@ -3,7 +3,7 @@
 	"name": "dashare-multiplay3",
 	"shortname": "multiplay",
 	"description": "OSC for DaShare Multiplay 3 software",
-	"version": "1.0.1",
+	"version": "0.0.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-dashare-multiplay3.git",
 	"bugs": "https://github.com/bitfocus/companion-module-dashare-multiplay3/issues",
