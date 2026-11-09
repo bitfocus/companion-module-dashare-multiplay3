@@ -12,11 +12,11 @@
 		"url": ""
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.7.0",
+		"@companion-module/base": "~1.15.1",
 		"node-osc": "9.1.1"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^2.8.0"
+		"@companion-module/tools": "^2.9.0"
 	},
 	"prettier": "@companion-module/tools/.prettierrc.json"
 }
